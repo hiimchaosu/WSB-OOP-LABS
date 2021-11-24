@@ -1,42 +1,65 @@
 package com.company.devices;
 
-import com.company.animals.Human;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Phone extends Device {
-    public final Double screenSize;
-    public String os;
+public class Phone implements Device {
 
-    public static String greetings = "HELLO";
+    private BrandApplication.Brands brand;
+    private String model;
+    private OS operatingSystem;
+    private List<Application> installedApplications;
 
-    public Phone(String producer, String model, Double screenSize, String os) {
-        this.screenSize = screenSize;
-        this.os = os;
+    public BrandApplication.Brands getBrand() {
+        return brand;
     }
 
-    public String toString() {
-        return "producer: " + this.producer
-                + " model: " + this.model;
+    public void setBrand(BrandApplication.Brands brand) {
+        this.brand = brand;
     }
 
-    @Override
-    public void turnOn() {
-        System.out.println("Phone is turned on");
+    public String getModel() {
+        return model;
     }
 
-    @Override
-    public void sell(Human seller, Human buyer, Double price) throws Exception {
-        if(seller.phone == this) {
-            if (buyer.cash >= price) {
-                buyer.cash -= price;
-                seller.cash += price;
-                buyer.phone = this;
-                seller.phone = null;
-                System.out.println("Phone has been sold");
-            } else {
-               throw new Exception("Buyer does not have enough money");
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public OS getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public void setOperatingSystem(OS operatingSystem) {
+        this.operatingSystem = operatingSystem;
+    }
+
+    public Phone() {
+        installedApplications = new ArrayList<>();
+    }
+
+    public boolean installApplication(Application application) {
+        for (Application app: installedApplications ) {
+            if (app.Name.equals(application.Name)){
+                if (app.Version >= application.Version){
+                    return false;
+                }
+                installedApplications.remove(app);
+                break;
             }
-        } else {
-            throw new Exception("Seller does not own the car");
         }
+        if (operatingSystem != application.SupportedOS){
+            return false;
+        }
+        installedApplications.add(application);;
+        System.out.println("Installing app...");
+        return true;
+    }
+
+    public boolean installBrandApplication(BrandApplication application) {
+        if (brand != application.SupportedBrand){
+            return false;
+        }
+        return installApplication(application);
     }
 }
